@@ -16,19 +16,26 @@
   </style>
 </head>
 <body>
-  <h1>Todo API UI</h1>
+  <button id="toggle-dark" aria-label="Toggle dark mode">🌙</button>
+  <h1>Todo App</h1>
   <div class="instructions">
     <strong>Instructions:</strong>
     <ul>
-      <li>Use the form below to add a new todo (title and description required).</li>
+      <li>Use the form below to add a new todo (title and priority required).</li>
       <li>Click "Refresh List" to fetch the latest todos from the API.</li>
+      <li>Click the moon/sun icon to toggle dark mode.</li>
       <li>This UI interacts with the <code>/todos</code> API endpoints.</li>
     </ul>
   </div>
   <section>
     <h2>Add Todo</h2>
-    <form id="add-todo-form">
-      <input type="text" id="todo-title" placeholder="Title" required />
+    <form id="add-todo-form" autocomplete="off">
+      <input type="text" id="todo-title" placeholder="Title" required autofocus />
+      <select id="todo-priority" required>
+        <option value="medium" selected>Medium Priority</option>
+        <option value="low">Low Priority</option>
+        <option value="high">High Priority</option>
+      </select>
       <button type="submit">Add</button>
     </form>
   </section>
@@ -39,6 +46,7 @@
     <template id="todo-item-template">
       <li>
         <span class="todo-title"></span>
+        <span class="todo-priority"></span>
         <button class="toggle-complete"></button>
       </li>
     </template>

@@ -40,10 +40,10 @@ function getById(ip, id) {
   return getUserTodos(ip).find((todo) => todo.id === id);
 }
 
-function create(ip, { title }) {
+function create(ip, { title, priority = "medium" }) {
   const todos = getUserTodos(ip);
   const newId = todos.length > 0 ? Math.max(...todos.map((t) => t.id)) + 1 : 1;
-  const newTodo = { id: newId, title, completed: false };
+  const newTodo = { id: newId, title, completed: false, priority };
   todos.push(newTodo);
   setUserTodos(ip, todos);
   return newTodo;
@@ -56,6 +56,11 @@ function update(ip, id, updates) {
   if (typeof updates.title === "string") todos[idx].title = updates.title;
   if (typeof updates.completed === "boolean")
     todos[idx].completed = updates.completed;
+  if (
+    typeof updates.priority === "string" &&
+    ["low", "medium", "high"].includes(updates.priority)
+  )
+    todos[idx].priority = updates.priority;
   setUserTodos(ip, todos);
   return todos[idx];
 }
