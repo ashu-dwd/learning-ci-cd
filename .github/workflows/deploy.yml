@@ -1,0 +1,69 @@
+name: Deploy Todo API
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "pnpm"
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      # - name: Run tests
+      #   run: pnpm test
+
+      - name: Copy files to server over SSH
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || '22' }}
+          source: "."
+          target: ${{ secrets.SERVER_DEPLOY_PATH }}
+
+      - name: Backup and restart server with PM2 (backup before deploy)
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || '22' }}
+          script: |
+            # Set variables
+            DEPLOY_DIR="${{ secrets.SERVER_DEPLOY_PATH }}"
+            BACKUP_DIR="${DEPLOY_DIR}_backup_$(date +%Y%m%d_%H%M%S)"
+            BASE_BACKUP="${DEPLOY_DIR}_backup_"
+
+            # If deployment directory exists, make a backup
+            if [ -d "$DEPLOY_DIR" ]; then
+              cp -r "$DEPLOY_DIR" "$BACKUP_DIR"
+              echo "Backup created: $BACKUP_DIR"
+            fi
+
+            # Keep only the 5 most recent backups, delete older ones
+            BACKUP_PARENT=$(dirname "$DEPLOY_DIR")
+            find "$BACKUP_PARENT" -maxdepth 1 -type d -name "$(basename $DEPLOY_DIR)_backup_*" | sort -r | tail -n +6 | xargs -r rm -rf
+
+            # Proceed to deployment directory, install/deploy
+            cd "$DEPLOY_DIR"
+            pnpm install --prod
+            pm2 reload ecosystem.config.cjs || pm2 start src/index.js --name todo-api
