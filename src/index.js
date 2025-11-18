@@ -16,7 +16,10 @@ app.use(express.json());
 
 // Health check or welcome route
 app.get("/", (req, res) => {
-  res.json({ message: "Todo API is running" });
+  res.json({
+    message:
+      "Todo API is running and This is the check that my ci cd pipeline is working",
+  });
 });
 
 // Mount todo routes under /todos path
