@@ -49,8 +49,8 @@ jobs:
             BACKUP_DIR="${DEPLOY_DIR}_backup_$(date +%Y%m%d_%H%M%S)"
             BASE_BACKUP="${DEPLOY_DIR}_backup_"
 
-            # SET PATH for Node/PM2/pnpm in non-interactive SSH session
-            export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:$PATH"
+            # SET PATH for Node/PM2/pnpm in non-interactive SSH session (fix for NVM/PNPM/PM2)
+            export PATH="$HOME/.nvm/versions/node/v24.11.1/bin:$HOME/.local/share/pnpm:$HOME/.local/bin:/usr/local/bin:/usr/bin:$PATH"
 
             # If deployment directory exists, make a backup
             if [ -d "$DEPLOY_DIR" ]; then
