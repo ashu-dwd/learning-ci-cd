@@ -30,19 +30,28 @@ body.dark {
   --completed: #aaa;
 }
 
-#toggle-dark {
-  position: absolute;
-  top: 1.5rem;
-  right: 2rem;
-  background: none;
-  border: none;
-  font-size: 1.7rem;
-  cursor: pointer;
-  color: var(--accent);
-  transition: color 0.3s;
+.navbar {
+  display: flex;
+  gap: 1.5em;
+  background: var(--card-bg);
+  padding: 1em 2em;
+  border-radius: 8px;
+  margin-bottom: 2em;
+  box-shadow: var(--card-shadow);
 }
-#toggle-dark:hover {
-  color: var(--accent-hover);
+.navbar a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.1em;
+  padding: 0.2em 0.7em;
+  border-radius: 4px;
+  transition: background 0.2s, color 0.2s;
+}
+.navbar a.active,
+.navbar a:hover {
+  background: var(--accent);
+  color: #fff;
 }
 
 h1 {
@@ -69,7 +78,10 @@ form,
 section {
   margin-bottom: 2rem;
 }
-input[type="text"] {
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="number"] {
   padding: 0.5em;
   margin-right: 0.5em;
   border: 1px solid #ccc;
@@ -169,5 +181,10 @@ button:hover {
   #toggle-dark {
     top: 0.7rem;
     right: 1rem;
+  }
+  .navbar {
+    flex-direction: column;
+    gap: 0.5em;
+    padding: 0.7em 0.5em;
   }
 }

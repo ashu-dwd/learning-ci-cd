@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Todo API UI</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="style.css"/>
   <style>
     .instructions {
@@ -13,10 +14,34 @@
       margin-bottom: 2em;
       font-size: 1em;
     }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border-radius: 10px;
+      box-shadow: var(--card-shadow);
+      padding: 2em 2.5em;
+    }
   </style>
 </head>
 <body>
   <button id="toggle-dark" aria-label="Toggle dark mode">🌙</button>
+  <nav class="navbar">
+    <a href="index.html" class="active">Dashboard</a>
+    <a href="about.html">About</a>
+    <a href="login.html">Login</a>
+    <a href="signup.html">Sign Up</a>
+  </nav>
+  <main class="container">
+  <div id="auth-panel" style="margin-bottom:1.5em;">
+    <span id="auth-user" style="margin-left:1em;"></span>
+    <button id="logout-btn" style="display:none;">Logout</button>
+    <span id="auth-error" style="color:#e74c3c;margin-left:1em;"></span>
+    <span id="auth-links" style="margin-left:1em;">
+      <a href="login.html" id="login-link">Login</a> |
+      <a href="signup.html" id="signup-link">Sign Up</a>
+    </span>
+  </div>
   <h1>Todo App</h1>
   <div class="instructions">
     <strong>Instructions:</strong>
@@ -36,21 +61,40 @@
         <option value="low">Low Priority</option>
         <option value="high">High Priority</option>
       </select>
+      <input type="date" id="todo-due" required />
+      <select id="todo-recurring">
+        <option value="">No Repeat</option>
+        <option value="daily">Daily</option>
+        <option value="weekly">Weekly</option>
+        <option value="custom">Custom (every N days)</option>
+      </select>
+      <input type="number" id="todo-recurring-custom" min="2" max="365" placeholder="N days" style="display:none;width:90px;" />
       <button type="submit">Add</button>
     </form>
   </section>
   <section>
     <h2>Todos</h2>
-    <button id="refresh-btn">Refresh List</button>
-    <ul id="todo-list"></ul>
+    <div style="display: flex; flex-wrap: wrap; gap: 2em; align-items: flex-start;">
+      <div style="flex: 2 1 350px;">
+        <button id="refresh-btn" style="margin-bottom:1em;">Refresh List</button>
+        <div id="progress-stats" style="margin: 1em 0; font-size: 1.1em;"></div>
+        <ul id="todo-list"></ul>
+      </div>
+      <div style="flex: 1 1 300px; min-width: 250px;">
+        <canvas id="productivity-chart" width="320" height="220" style="background:var(--card-bg);border-radius:8px;box-shadow:var(--card-shadow);"></canvas>
+      </div>
+    </div>
     <template id="todo-item-template">
       <li>
         <span class="todo-title"></span>
         <span class="todo-priority"></span>
+        <span class="todo-due"></span>
+        <span class="todo-recurring"></span>
         <button class="toggle-complete"></button>
       </li>
     </template>
   </section>
   <script src="main.js"></script>
+  </main>
 </body>
 </html>

@@ -7,7 +7,9 @@
 
 const express = require("express");
 const cors = require("cors");
+const session = require("express-session");
 const todoRoutes = require("./routes/todoRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 const path = require("path");
@@ -18,6 +20,16 @@ app.use(cors());
 
 // Enable parsing of JSON bodies
 app.use(express.json());
+
+// Session middleware for login state
+app.use(
+  session({
+    secret: "todo_secret_key",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false }, // set to true if using HTTPS
+  })
+);
 
 // Serve static files from public/
 app.use(express.static(path.join(__dirname, "../public")));
@@ -31,6 +43,7 @@ app.get("/", (req, res) => {
 });
 
 // Mount todo routes under /todos path
+app.use("/auth", authRoutes);
 app.use("/todos", todoRoutes);
 
 // Global error handler (catches thrown errors in routes/controllers)

@@ -40,10 +40,21 @@ function getById(ip, id) {
   return getUserTodos(ip).find((todo) => todo.id === id);
 }
 
-function create(ip, { title, priority = "medium" }) {
+function create(
+  ip,
+  { title, priority = "medium", due, recurring, recurringCustom }
+) {
   const todos = getUserTodos(ip);
   const newId = todos.length > 0 ? Math.max(...todos.map((t) => t.id)) + 1 : 1;
-  const newTodo = { id: newId, title, completed: false, priority };
+  const newTodo = {
+    id: newId,
+    title,
+    completed: false,
+    priority,
+    due,
+    recurring,
+    recurringCustom,
+  };
   todos.push(newTodo);
   setUserTodos(ip, todos);
   return newTodo;
@@ -61,6 +72,11 @@ function update(ip, id, updates) {
     ["low", "medium", "high"].includes(updates.priority)
   )
     todos[idx].priority = updates.priority;
+  if (typeof updates.due === "string") todos[idx].due = updates.due;
+  if (typeof updates.recurring === "string")
+    todos[idx].recurring = updates.recurring;
+  if (typeof updates.recurringCustom === "number")
+    todos[idx].recurringCustom = updates.recurringCustom;
   setUserTodos(ip, todos);
   return todos[idx];
 }

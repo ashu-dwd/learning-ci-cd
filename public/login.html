@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Todo App</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html">Dashboard</a>
+    <a href="about.html">About</a>
+    <a href="login.html" class="active">Login</a>
+    <a href="signup.html">Sign Up</a>
+  </nav>
+  <main class="container">
+    <h1>Login</h1>
+    <form id="login-form" autocomplete="on">
+      <input type="text" id="login-username" placeholder="Username" required autocomplete="username" />
+      <input type="password" id="login-password" placeholder="Password" required autocomplete="current-password" />
+      <button type="submit">Login</button>
+    </form>
+    <div id="login-error" style="color:#e74c3c;margin-top:1em;"></div>
+    <p>Don't have an account? <a href="signup.html">Sign up here</a>.</p>
+  </main>
+  <script>
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const username = document.getElementById("login-username").value;
+      const password = document.getElementById("login-password").value;
+      const res = await fetch("/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username, password }),
+      });
+      if (res.ok) {
+        window.location.href = "index.html";
+      } else {
+        document.getElementById("login-error").textContent = "Login failed. Please check your credentials.";
+      }
+    });
+  </script>
+</body>
+</html>
