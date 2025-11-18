@@ -6,13 +6,21 @@
  */
 
 const express = require("express");
+const cors = require("cors");
 const todoRoutes = require("./routes/todoRoutes");
 
 const app = express();
+const path = require("path");
 const PORT = process.env.PORT || 3000;
+
+//unabling cors
+app.use(cors());
 
 // Enable parsing of JSON bodies
 app.use(express.json());
+
+// Serve static files from public/
+app.use(express.static(path.join(__dirname, "../public")));
 
 // Health check or welcome route
 app.get("/", (req, res) => {

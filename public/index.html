@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Todo API UI</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .instructions {
+      background: #eaf6fb;
+      border-left: 4px solid #3498db;
+      padding: 1em;
+      margin-bottom: 2em;
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Todo API UI</h1>
+  <div class="instructions">
+    <strong>Instructions:</strong>
+    <ul>
+      <li>Use the form below to add a new todo (title and description required).</li>
+      <li>Click "Refresh List" to fetch the latest todos from the API.</li>
+      <li>This UI interacts with the <code>/todos</code> API endpoints.</li>
+    </ul>
+  </div>
+  <section>
+    <h2>Add Todo</h2>
+    <form id="add-todo-form">
+      <input type="text" id="todo-title" placeholder="Title" required />
+      <button type="submit">Add</button>
+    </form>
+  </section>
+  <section>
+    <h2>Todos</h2>
+    <button id="refresh-btn">Refresh List</button>
+    <ul id="todo-list"></ul>
+    <template id="todo-item-template">
+      <li>
+        <span class="todo-title"></span>
+        <button class="toggle-complete"></button>
+      </li>
+    </template>
+  </section>
+  <script src="main.js"></script>
+</body>
+</html>

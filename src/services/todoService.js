@@ -1,56 +1,59 @@
 /**
- * Service layer for Todo operations.
+ * Service layer for Todo operations, per user (by IP).
  * Abstracts business logic from controller and isolates model dependency.
  */
 
-const todoModel = require("../models/todo");
+const todoModel = require("../models/todoFileDb");
 
 module.exports = {
   /**
-   * Get all todos
+   * Get all todos for a user
+   * @param {string} ip
    * @returns {Array<Object>}
    */
-  getTodos: () => {
-    // Potential place for filtering, pagination, etc.
-    return todoModel.getAll();
+  getTodos: (ip) => {
+    return todoModel.getAll(ip);
   },
 
   /**
-   * Get a todo by ID
+   * Get a todo by ID for a user
+   * @param {string} ip
    * @param {number} id
    * @returns {Object|null}
    */
-  getTodoById: (id) => {
-    return todoModel.getById(id);
+  getTodoById: (ip, id) => {
+    return todoModel.getById(ip, id);
   },
 
   /**
-   * Create a new todo
+   * Create a new todo for a user
+   * @param {string} ip
    * @param {Object} data
    * @param {string} data.title
    * @returns {Object}
    */
-  createTodo: (data) => {
-    // Business logic: could check for duplicates, length constraints, etc.
-    return todoModel.create(data);
+  createTodo: (ip, data) => {
+    return todoModel.create(ip, data);
   },
 
   /**
-   * Update a todo by ID
+   * Update a todo by ID for a user
+   * @param {string} ip
    * @param {number} id
    * @param {Object} updates
    * @returns {Object|null}
    */
-  updateTodo: (id, updates) => {
-    return todoModel.update(id, updates);
+  updateTodo: (ip, id, updates) => {
+    return todoModel.update(ip, id, updates);
   },
 
   /**
-   * Delete a todo by ID
+   * Delete a todo by ID for a user
+   * @param {string} ip
    * @param {number} id
    * @returns {boolean}
    */
-  deleteTodo: (id) => {
-    return todoModel.delete(id);
+  deleteTodo: (ip, id) => {
+    return todoModel.delete(ip, id);
   },
 };

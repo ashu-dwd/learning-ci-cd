@@ -9,7 +9,13 @@ const todoService = require("../services/todoService");
  * Get all todos
  */
 const getTodos = (req, res) => {
-  const todos = todoService.getTodos();
+  // Get real client IP, not server or proxy
+  const ip =
+    req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+    req.socket?.remoteAddress ||
+    req.connection?.remoteAddress ||
+    req.ip;
+  const todos = todoService.getTodos(ip);
   res.json(todos);
 };
 
@@ -17,10 +23,16 @@ const getTodos = (req, res) => {
  * Get a todo by ID
  */
 const getTodoById = (req, res) => {
+  // Get real client IP, not server or proxy
+  const ip =
+    req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+    req.socket?.remoteAddress ||
+    req.connection?.remoteAddress ||
+    req.ip;
   const id = Number(req.params.id);
   if (isNaN(id)) return res.status(400).json({ error: "Invalid ID" });
 
-  const todo = todoService.getTodoById(id);
+  const todo = todoService.getTodoById(ip, id);
   if (!todo) return res.status(404).json({ error: "Todo not found" });
 
   res.json(todo);
@@ -30,11 +42,17 @@ const getTodoById = (req, res) => {
  * Create a new todo
  */
 const createTodo = (req, res) => {
+  // Get real client IP, not server or proxy
+  const ip =
+    req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+    req.socket?.remoteAddress ||
+    req.connection?.remoteAddress ||
+    req.ip;
   const { title } = req.body;
   if (typeof title !== "string" || !title.trim())
     return res.status(400).json({ error: "Title is required" });
 
-  const newTodo = todoService.createTodo({ title: title.trim() });
+  const newTodo = todoService.createTodo(ip, { title: title.trim() });
   res.status(201).json(newTodo);
 };
 
@@ -42,6 +60,12 @@ const createTodo = (req, res) => {
  * Update an existing todo
  */
 const updateTodo = (req, res) => {
+  // Get real client IP, not server or proxy
+  const ip =
+    req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+    req.socket?.remoteAddress ||
+    req.connection?.remoteAddress ||
+    req.ip;
   const id = Number(req.params.id);
   if (isNaN(id)) return res.status(400).json({ error: "Invalid ID" });
 
@@ -50,7 +74,7 @@ const updateTodo = (req, res) => {
   if (typeof req.body.completed === "boolean")
     updates.completed = req.body.completed;
 
-  const updatedTodo = todoService.updateTodo(id, updates);
+  const updatedTodo = todoService.updateTodo(ip, id, updates);
   if (!updatedTodo) return res.status(404).json({ error: "Todo not found" });
 
   res.json(updatedTodo);
@@ -60,10 +84,16 @@ const updateTodo = (req, res) => {
  * Delete a todo
  */
 const deleteTodo = (req, res) => {
+  // Get real client IP, not server or proxy
+  const ip =
+    req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+    req.socket?.remoteAddress ||
+    req.connection?.remoteAddress ||
+    req.ip;
   const id = Number(req.params.id);
   if (isNaN(id)) return res.status(400).json({ error: "Invalid ID" });
 
-  const removed = todoService.deleteTodo(id);
+  const removed = todoService.deleteTodo(ip, id);
   if (!removed) return res.status(404).json({ error: "Todo not found" });
 
   res.status(204).send();
